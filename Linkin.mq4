@@ -12,9 +12,9 @@
 //--- input parameters
 input int Magic_Number = 1;
 
-input double Entry_Lot = 0.01;
+input double Entry_Lot = 0.1;
 
-input double StopLoss = 0.10;
+input double StopLoss = 0.2;
 
 string thisSymbol;
 
@@ -105,7 +105,7 @@ void drawHLine(string id, double pos, string label, color clr = clrYellow, int w
 }
 
 void moveHLine(string id, double pos) {
-  ObjectSet(id, OBJPROP_PRICE, pos);
+  ObjectSet(id, OBJPROP_PRICE1, pos);
 }
 
 enum Direction {
@@ -135,7 +135,12 @@ double getBottomHige(int i) {
     hige = iClose(thisSymbol, Candle_Stick_Size, i) - iLow(thisSymbol, Candle_Stick_Period, i);
   }
   
-  return hige / real;
+  if(0.0 < real) {
+    return hige / real;
+  }
+  else {
+    return 0.0;
+  }
 }
 
 double getTopHige(int i) {
@@ -150,7 +155,12 @@ double getTopHige(int i) {
     hige = iHigh(thisSymbol, Candle_Stick_Period, i) - iOpen(thisSymbol, Candle_Stick_Size, i);
   }
   
-  return hige / real;
+  if(0.0 < real) {
+    return hige / real;
+  }
+  else {
+    return 0.0;
+  }
 }
 
 int getSignal() {
@@ -249,7 +259,7 @@ void OnTick()
   int highTime = searchHighTime();
   high1st = iHigh(thisSymbol, Candle_Stick_Size, highTime);
   moveHLine(hLineID1, high1st);
-
+  
   int lowTime = searchLowTime();
   low1st = iLow(thisSymbol, Candle_Stick_Size, lowTime);
   moveHLine(lLineID1, low1st);
@@ -266,11 +276,14 @@ void OnTick()
     int signal = getSignal();
     
     if(signal == OP_BUY) {
-      int ticket = OrderSend(thisSymbol, OP_BUY, Entry_Lot, NormalizeDouble(Ask, Digits), 3, NormalizeDouble(Ask - StopLoss, Digits), 0);
+      int ticket = OrderSend(thisSymbol, OP_BUY, Entry_Lot, NormalizeDouble(Ask, Digits), 3, NormalizeDouble(Ask - StopLoss, Digits), 0, NULL, Magic_Number);
     }
     else if(signal == OP_SELL) {
-      int ticket = OrderSend(thisSymbol, OP_SELL, Entry_Lot, NormalizeDouble(Bid, Digits), 3, NormalizeDouble(Bid + StopLoss, Digits), 0);
+      int ticket = OrderSend(thisSymbol, OP_SELL, Entry_Lot, NormalizeDouble(Bid, Digits), 3, NormalizeDouble(Bid + StopLoss, Digits), 0, NULL, Magic_Number);
     }
+  }
+  else {
+    trail();
   }
 }
 
