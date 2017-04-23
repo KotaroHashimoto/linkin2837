@@ -13,7 +13,7 @@
 input int Magic_Number = 1;
 
 input double Entry_Lot = 0.1;
-input double Nampin_Lot = 0.1;
+input double Ryodate_Lot = 0.1;
 
 input double StopLoss = 0.2;
 
@@ -371,7 +371,7 @@ void OnTick()
   else if(OrdersTotal() == 2) {
     if(direction == OP_BUY) {
       if(Ask < nampinPos) {
-        int ticket = OrderSend(thisSymbol, OP_SELL, Nampin_Lot, NormalizeDouble(Bid, Digits), 3, 0, 0, NULL, Magic_Number);    
+        int ticket = OrderSend(thisSymbol, OP_SELL, Ryodate_Lot, NormalizeDouble(Bid, Digits), 3, 0, 0, NULL, Magic_Number);    
       }      
       if(getIndSignal() == OP_BUY) {
         int ticket = OrderSend(thisSymbol, OP_BUY, Entry_Lot * 4.0, NormalizeDouble(Ask, Digits), 3, 0, 0, NULL, Magic_Number);
@@ -379,7 +379,7 @@ void OnTick()
     }
     else if(direction == OP_SELL) {
       if(nampinPos < Bid) {
-        int ticket = OrderSend(thisSymbol, OP_BUY, Nampin_Lot, NormalizeDouble(Ask, Digits), 3, 0, 0, NULL, Magic_Number);    
+        int ticket = OrderSend(thisSymbol, OP_BUY, Ryodate_Lot, NormalizeDouble(Ask, Digits), 3, 0, 0, NULL, Magic_Number);    
       }          
       if(getIndSignal() == OP_SELL) {
         int ticket = OrderSend(thisSymbol, OP_SELL, Entry_Lot * 4.0, NormalizeDouble(Bid, Digits), 3, 0, 0, NULL, Magic_Number);
